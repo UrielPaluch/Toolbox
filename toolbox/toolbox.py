@@ -1,3 +1,6 @@
+"""
+    Define las funciones de la libreria
+"""
 
 def get_feriados_byma() -> list:
     """
