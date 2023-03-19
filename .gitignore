@@ -1,2 +1,3 @@
 pruebas.py
 .vscode
+*__pycache__*
