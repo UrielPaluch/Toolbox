@@ -2,7 +2,7 @@
     Define las funciones de la libreria
 """
 
-def get_feriados_byma() -> list:
+def get_feriados_byma() -> list['str']:
     """
     Devuelve una lista de strings con fechas de todos los feriados de byma
     """
