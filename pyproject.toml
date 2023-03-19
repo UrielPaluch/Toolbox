@@ -1,9 +1,11 @@
 [tool.poetry]
 name = "toolbox"
-version = "0.1.0"
 description = ""
 authors = ["UrielPaluch <uripaluch.2@gmail.com>"]
 readme = "README.md"
+
+[tool.semantic_release]
+version_variable = "pyproject.toml:version"
 
 [tool.poetry.dependencies]
 python = "^3.9"
