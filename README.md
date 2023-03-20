@@ -37,6 +37,8 @@ el precio y la cantidad.
 
 Modulo de logging.
 
+* **my_logger** : inicializa el logger.
+
 ### Author/Mainteiner
 
 [Uriel Paluch](https://github.com/UrielPaluch)
