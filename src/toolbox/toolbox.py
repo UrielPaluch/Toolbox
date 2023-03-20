@@ -21,7 +21,7 @@ def get_feriados_byma() -> list['str']:
     return feriados_byma
 
 def calculo_plazo_liquidacion() -> int:
-    """ Plazo de liquidacion en dias para el calculo de la tasa
+    """ Plazo de liquidacion de 48hs en dias para el calculo de la tasa
 
     Returns
     ----------
