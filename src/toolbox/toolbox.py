@@ -76,3 +76,38 @@ def hay_mercado(hoy : datetime.date = datetime.date.today()) -> np.bool_:
     feriados_byma = get_feriados_byma()
 
     return np.is_busday(hoy, holidays = feriados_byma)
+
+def extract_price_size_values(my_dict: dict) -> "tuple[float, int]":
+    """ Del dict con informacion que envia el mercado se extrae el precio y
+
+    la cantidad
+
+    Parameters
+    ----------
+    my_dict : dict
+        Informacion que envia el mercado
+
+    Returns
+    -------
+    tuple(precio, cantidad)
+        precio y cantidad
+
+    """
+
+    key = list(my_dict.get('marketData').keys())[0] # type: ignore
+    values = my_dict.get('marketData').get(key) # type: ignore
+
+    # Si no hay bid
+    # Puede traer una lista vacia o None en caso de que no haya
+    if not values:
+        price = 0
+        size = 0
+    # Si hay bid
+    else:
+        # Entonces tiene que haber precio y cantidad
+        # Un detalle es el [0], porque devuelve una lista donde el primer
+        # elemento es un diccionario
+        price = values[0].get('price')
+        size = values[0].get('size')
+
+    return(price, size)
