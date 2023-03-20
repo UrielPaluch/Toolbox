@@ -3,6 +3,7 @@ import datetime
 
 from toolbox import get_feriados_byma
 from toolbox import calculo_plazo_liquidacion
+from toolbox import hay_mercado
 
 def test_get_feriados_byma():
 
@@ -45,3 +46,30 @@ def test_calculo_plazo_liquidacion():
     assert feriado_expected_return == feriado_actual_return, "Fallo el feriado"
 
 test_calculo_plazo_liquidacion()
+
+def test_hay_mercado():
+    lunes = '2023-03-20'
+    lunes_expected_return = True
+    lunes_actual_return = hay_mercado(datetime.datetime.strptime(lunes, "%Y-%m-%d").date())
+
+    assert lunes_expected_return == lunes_actual_return, "Fallo el lunes"
+
+    sabado = '2023-03-18'
+    jueves_expected_return = False
+    jueves_actual_return = hay_mercado(datetime.datetime.strptime(sabado, "%Y-%m-%d").date())
+
+    assert jueves_expected_return == jueves_actual_return, "Fallo el sabado"
+
+    domingo = '2023-03-19'
+    viernes_expected_return = False
+    viernes_actual_return = hay_mercado(datetime.datetime.strptime(domingo, "%Y-%m-%d").date())
+
+    assert viernes_expected_return == viernes_actual_return, "Fallo el domingo"
+
+    feriado = '2023-03-24'
+    feriado_expected_return = False
+    feriado_actual_return = hay_mercado(datetime.datetime.strptime(feriado, "%Y-%m-%d").date())
+
+    assert feriado_expected_return == feriado_actual_return, "Fallo el feriado"
+
+test_hay_mercado()
