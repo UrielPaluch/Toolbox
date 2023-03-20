@@ -80,7 +80,7 @@ def new_file(configuration_file : dict, testing: bool, file_handler: str) -> str
     return result
 
 def my_logger(testing : bool) -> None:
-    """Inicializa el logger configurado especialmente para Tito
+    """Inicializa el logger
 
     Parameters
     ----------
