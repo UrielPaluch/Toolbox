@@ -47,8 +47,7 @@ def calculo_plazo_liquidacion(hoy : datetime.date = datetime.date.today()) -> in
     count_dias_habiles = 0
 
     while count_dias_habiles < 2:
-        dia_liquidacion = dia_liquidacion + \
-                        datetime.timedelta(days = 1)
+        dia_liquidacion = dia_liquidacion + datetime.timedelta(days = 1)
 
         if np.is_busday(dia_liquidacion, holidays = feriados_byma):
             count_dias_habiles += 1
