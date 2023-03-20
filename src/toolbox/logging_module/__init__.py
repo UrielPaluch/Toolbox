@@ -3,3 +3,4 @@
 """
 
 from .logging_module import my_logger
+from .logging_module import logging

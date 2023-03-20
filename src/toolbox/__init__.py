@@ -8,3 +8,4 @@ from .toolbox import hay_mercado
 from .toolbox import extract_price_size_values
 
 from .logging_module import my_logger
+from .logging_module import logging
