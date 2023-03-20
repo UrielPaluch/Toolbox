@@ -89,7 +89,7 @@ def extract_price_size_values(my_dict: dict) -> "tuple[float, int]":
 
     Returns
     -------
-    tuple(precio, cantidad)
+    tuple(precio: float, cantidad: int)
         precio y cantidad
 
     """
