@@ -55,3 +55,24 @@ def calculo_plazo_liquidacion(hoy : datetime.date = datetime.date.today()) -> in
     diff_days = dia_liquidacion - hoy
 
     return diff_days.days
+
+def hay_mercado(hoy : datetime.date = datetime.date.today()) -> np.bool_:
+    """ Devuelve si hay mercado
+
+    Parameters
+    ----------
+    hoy : datetime.date
+        Fecha para calcular el plazo de liquidacion. Default: Hoy.
+
+    Returns
+    -------
+    np.bool_
+        `True` si hay mercado, `False` en caso contrario.
+
+    """
+    # Los feriados tienen que estar en orden con el formato yyyy-mm-dd
+    # Se extraen los feriados de https://www.byma.com.ar/servicios/calendario-bursatil/
+    # para cargarlos en la variable feriados_byma
+    feriados_byma = get_feriados_byma()
+
+    return np.is_busday(hoy, holidays = feriados_byma)
