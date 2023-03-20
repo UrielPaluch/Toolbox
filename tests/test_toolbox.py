@@ -4,6 +4,8 @@ import datetime
 from toolbox import get_feriados_byma
 from toolbox import calculo_plazo_liquidacion
 from toolbox import hay_mercado
+from toolbox import extract_price_size_values
+
 
 def test_get_feriados_byma():
 
@@ -73,3 +75,50 @@ def test_hay_mercado():
     assert feriado_expected_return == feriado_actual_return, "Fallo el feriado"
 
 test_hay_mercado()
+
+def test_extract_price_size_values():
+
+    no_values = {
+        'type': 'Md',
+        'timestamp': 1679278806883,
+        'instrumentId': {'marketId': 'ROFX', 'symbol': 'MERV - XMEV - MIRG - CI'},
+        'marketData': {'OF': None}
+    }
+
+    no_values_expected_return = (0, 0)
+
+    no_values_actual_return = extract_price_size_values(no_values)
+
+    assert no_values_expected_return == no_values_actual_return, "Fallo no_values"
+
+    of_values = {
+        'type': 'Md',
+        'timestamp': 1679278806885,
+        'instrumentId': {'marketId': 'ROFX', 'symbol': 'MERV - XMEV - GOOGL - CI'},
+        'marketData': {
+            'OF': [{'price': 150.0, 'size': 1}]
+        }
+    }
+
+    of_values_expected_return = (150.0, 1)
+
+    of_values_actual_return = extract_price_size_values(of_values)
+
+    assert of_values_expected_return == of_values_actual_return, "Fallo of_values"
+
+    bid_values = {
+        'type': 'Md',
+        'timestamp': 1679278806885,
+        'instrumentId': {'marketId': 'ROFX', 'symbol': 'MERV - XMEV - AMZN - 48hs'},
+        'marketData': {
+            'BI': [{'price': 200.0, 'size': 1}]
+        }
+    }
+
+    bid_values_expected_return = (200.0, 1)
+
+    bid_values_actual_return = extract_price_size_values(bid_values)
+
+    assert bid_values_expected_return == bid_values_actual_return, "Fallo of_values"
+
+test_extract_price_size_values()
