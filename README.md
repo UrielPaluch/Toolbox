@@ -27,6 +27,7 @@ Esta seccion describe las funcionalidades y los componentes de la librería
 
 * **get_feriados_byma** : devuelve una lista con todos los feriados de Byma.
 * **get_plazo_liquidacion** : devuelve el proximo plazo de liquidacion para 48hs.
+* * **hay_mercado** : devuelve si hay mercado.
 
 ### Author/Mainteiner
 
