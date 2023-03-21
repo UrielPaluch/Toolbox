@@ -20,7 +20,7 @@ def get_feriados_byma() -> list['str']:
 
     return feriados_byma
 
-def calculo_plazo_liquidacion(hoy : datetime.date = datetime.date.today()) -> int:
+def calculo_plazo_liquidacion_48hs(hoy : datetime.date = datetime.date.today()) -> int:
     """ Plazo de liquidacion de 48hs en dias para el calculo de la tasa
 
     Parameters
