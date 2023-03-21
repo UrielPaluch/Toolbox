@@ -39,6 +39,7 @@ el precio y la cantidad.
 Modulo de logging.
 
 * **my_logger** : inicializa el logger.
+* **logging** : expone todas las funcionalidades del modulo de logging de Python.
 
 ### Author/Mainteiner
 
