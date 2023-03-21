@@ -52,6 +52,28 @@ def calculo_plazo_liquidacion_48hs(hoy : datetime.date = datetime.date.today()) 
     diff_days = dia_liquidacion - hoy
 
     return diff_days.days
+def calculo_plazo_liquidacion_24hs() -> int:
+    """ Plazo de liquidacion en 24hs
+
+    Returns
+    ----------
+    int
+        Proximo plazo de liquidacion en dias
+
+    """
+    # Los feriados tienen que estar en orden con el formato yyyy-mm-dd
+    # Se extraen los feriados de https://www.byma.com.ar/servicios/calendario-bursatil/
+    # para cargarlos en la variable feriados_byma
+    feriados_byma = get_feriados_byma()
+    dia_liquidacion = datetime.date.today() + datetime.timedelta(days = 1)
+
+    count_dias = 1
+
+    while not np.is_busday(dia_liquidacion, holidays = feriados_byma):
+        dia_liquidacion = dia_liquidacion + datetime.timedelta(days = 1)
+        count_dias += 1
+
+    return count_dias
 
 def hay_mercado(hoy : datetime.date = datetime.date.today()) -> np.bool_:
     """ Devuelve si hay mercado
