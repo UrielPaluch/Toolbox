@@ -52,8 +52,13 @@ def calculo_plazo_liquidacion_48hs(hoy : datetime.date = datetime.date.today()) 
     diff_days = dia_liquidacion - hoy
 
     return diff_days.days
-def calculo_plazo_liquidacion_24hs() -> int:
+def calculo_plazo_liquidacion_24hs(hoy : datetime.date = datetime.date.today()) -> int:
     """ Plazo de liquidacion en 24hs
+
+    Parameters
+    ----------
+    hoy : datetime.date
+        Fecha para calcular el plazo de liquidacion. Default: Hoy.
 
     Returns
     ----------
@@ -65,7 +70,7 @@ def calculo_plazo_liquidacion_24hs() -> int:
     # Se extraen los feriados de https://www.byma.com.ar/servicios/calendario-bursatil/
     # para cargarlos en la variable feriados_byma
     feriados_byma = get_feriados_byma()
-    dia_liquidacion = datetime.date.today() + datetime.timedelta(days = 1)
+    dia_liquidacion = hoy + datetime.timedelta(days = 1)
 
     count_dias = 1
 
