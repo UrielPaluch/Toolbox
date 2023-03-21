@@ -1,5 +1,9 @@
 # Bienvenido a la documentacion de Toolbox
 
+## Status
+
+[![Testing-Toolbox](https://github.com/UrielPaluch/Toolbox/actions/workflows/github-actions-testing.yml/badge.svg)](https://github.com/UrielPaluch/Toolbox/actions/workflows/github-actions-testing.yml)
+
 ## Overview
 
 *Toolbox* es una libreria creada con el objetivo de interactuar con los algoritmos
