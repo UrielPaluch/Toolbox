@@ -10,9 +10,6 @@ Yourself).
 
 ## Instalacion
 
-*Toolbox* es un repositorio privado y solo se puede instalar teniendo acceso al
-mismo.
-
 ```Python
 pip install git+https://github.com/UrielPaluch/Toolbox.git
 ```
