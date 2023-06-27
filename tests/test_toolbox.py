@@ -189,7 +189,7 @@ def test_extract_ticker_market_values():
     values_48hs = {
         'type': 'Md',
         'timestamp': 1679278806885,
-        'instrumentId': {'marketId': 'ROFX', 'symbol': 'MERV - XMEV - GOOGL - 24hs'},
+        'instrumentId': {'marketId': 'ROFX', 'symbol': 'MERV - XMEV - GOOGL - 48hs'},
         'marketData': {'OF': None}
     }
 
