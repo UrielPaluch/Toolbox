@@ -135,3 +135,24 @@ def extract_price_size_values(my_dict: dict) -> "tuple[float, int]":
         size = values[0].get('size')
 
     return(price, size)
+
+def extract_ticker_market_values(my_dict: dict) -> "tuple[str, str]":
+    """ Del dict con informacion que envia el mercado se extrae el ticker y
+
+    el market (48hs, 24hs, ci)
+
+    Parameters
+    ----------
+    my_dict : dict
+        Informacion que envia el mercado
+
+    Returns
+    -------
+    tuple(ticker: str, market: str)
+        ticker y market
+
+    """
+    ticker, market = (my_dict.get('instrumentId').get('symbol')[14:] # type: ignore
+                                 .replace(" ", "").split("-"))
+
+    return (ticker, market)

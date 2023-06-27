@@ -37,6 +37,8 @@ Esta seccion describe las funcionalidades y los componentes de la librería
 * **hay_mercado** : devuelve si hay mercado.
 * **extract_price_size_values** : del dict con informacion del mercado extrae
 el precio y la cantidad.
+* **extract_market_ticker_values** : del dict con informacion del mercado extrae
+el ticker y el mercado (CI, 24hs o 48hs).
 
 #### logging_module
 

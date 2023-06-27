@@ -6,7 +6,7 @@ from src.toolbox.toolbox import calculo_plazo_liquidacion_48hs
 from src.toolbox.toolbox import calculo_plazo_liquidacion_24hs
 from src.toolbox.toolbox import hay_mercado
 from src.toolbox.toolbox import extract_price_size_values
-
+from src.toolbox.toolbox import extract_ticker_market_values
 
 def test_get_feriados_byma():
 
@@ -154,3 +154,49 @@ def test_extract_price_size_values():
     assert bid_values_expected_return == bid_values_actual_return, "Fallo of_values"
 
 test_extract_price_size_values()
+
+def test_extract_ticker_market_values():
+    values_ci = {
+        'type': 'Md',
+        'timestamp': 1679278806885,
+        'instrumentId': {'marketId': 'ROFX', 'symbol': 'MERV - XMEV - GOOGL - CI'},
+        'marketData': {
+            'OF': [{'price': 150.0, 'size': 1}]
+        }
+    }
+
+    values_ci_expected_return = ("GOOGL", "CI")
+
+    values_ci_actual_return = extract_ticker_market_values(values_ci)
+
+    assert values_ci_expected_return == values_ci_actual_return, "Fallo values_ci"
+
+    values_24hs = {
+        'type': 'Md',
+        'timestamp': 1679278806885,
+        'instrumentId': {'marketId': 'ROFX', 'symbol': 'MERV - XMEV - GOOGL - 24hs'},
+        'marketData': {
+            'BI': [{'price': 150.0, 'size': 1}]
+        }
+    }
+
+    values_24hs_expected_return = ("GOOGL", "24hs")
+
+    values_24hs_actual_return = extract_ticker_market_values(values_24hs)
+
+    assert values_24hs_expected_return == values_24hs_actual_return, "Fallo values_24hs"
+
+    values_48hs = {
+        'type': 'Md',
+        'timestamp': 1679278806885,
+        'instrumentId': {'marketId': 'ROFX', 'symbol': 'MERV - XMEV - GOOGL - 24hs'},
+        'marketData': {'OF': None}
+    }
+
+    values_48hs_expected_return = ("GOOGL", "48hs")
+
+    values_48hs_actual_return = extract_ticker_market_values(values_48hs)
+
+    assert values_48hs_expected_return == values_48hs_actual_return, "Fallo values_48hs"
+
+test_extract_ticker_market_values()

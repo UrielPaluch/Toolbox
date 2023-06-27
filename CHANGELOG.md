@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.7.1 (19/03/2023)
+
+- Add extract_ticker_market_values
+  
 ## v0.4.0 (19/03/2023)
 
 - Add logging_module
