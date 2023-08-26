@@ -3,3 +3,4 @@ pruebas.py
 *__pycache__*
 .coverage
 *.DS_store
+*.log
