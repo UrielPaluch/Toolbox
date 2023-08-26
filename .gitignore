@@ -2,3 +2,4 @@ pruebas.py
 .vscode
 *__pycache__*
 .coverage
+*.DS_store
