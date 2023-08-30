@@ -133,7 +133,7 @@ def test_time_difference(N: int, cap: int, message_length: int = 100):
 
 if __name__ == '__main__':
     # Testing speed difference between both loggers.
-    (batch_log_time, batch_flush_time), normal_time = test_time_difference(N=100, cap=100)
+    (batch_log_time, batch_flush_time), normal_time = test_time_difference(N=400000, cap=5000)
     batch_time = batch_log_time + batch_flush_time
 
     print(f'Batch Logger: log time {batch_log_time*1000:.0f}ms, flush time {batch_flush_time*1000:.0f}ms')
