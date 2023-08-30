@@ -26,7 +26,7 @@ class MyBatchLogger():
         self.path_to_log_file = self.get_path_to_log_file(bot_name)
         
         file_handler = logging.FileHandler(self.path_to_log_file)
-        formatter = logging.Formatter("%(asctime)s :: [%(levelname)s] :: %(funcName)s :: %(lineno)d :: %(message)s")
+        formatter = logging.Formatter("%(asctime)s :: %(funcName)s :: %(lineno)d :: %(message)s")
         file_handler.setFormatter(formatter)
         handler = MemoryHandler(self.capacity, target=file_handler)
         # handler.setFormatter(formatter)
@@ -75,7 +75,7 @@ class MyNormalLogger():
         self.path_to_log_file = self.get_path_to_log_file(bot_name)
         
         file_handler = logging.FileHandler(self.path_to_log_file)
-        formatter = logging.Formatter("%(asctime)s :: [%(levelname)s] :: %(funcName)s :: %(lineno)d :: %(message)s")
+        formatter = logging.Formatter("%(asctime)s :: %(funcName)s :: %(lineno)d :: %(message)s")
         file_handler.setFormatter(formatter)
         
         self.logger.addHandler(file_handler)
