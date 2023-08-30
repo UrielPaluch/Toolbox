@@ -26,7 +26,7 @@ class MyBatchLogger():
         """
         self.capacity = capacity
         self.testing = testing
-        self.logger = logging.getLogger(__name__)
+        self.logger = logging.getLogger('batch_logger')
         self.path_to_log_file = self.get_path_to_log_file(bot_name)
         file_handler = logging.FileHandler(self.path_to_log_file)
         formatter = logging.Formatter("%(asctime)s :: %(funcName)s :: %(lineno)d :: %(message)s")
@@ -39,14 +39,15 @@ class MyBatchLogger():
         Devuelve el path al archivo de logging
         """
         # Check if the logs folder exists, and if not, create it
-        if not os.path.exists('./logs'):
-            os.makedirs('./logs')
+        log_dir = './logs'
+        if not os.path.exists(log_dir):
+            os.makedirs(log_dir)
 
         # Get the file paths for testing and production.
         if self.testing:
-            path = f"./logs/testing_{bot_name}_{datetime.today().strftime('%Y-%m-%d_%H-%M')}.log"
+            path = f"{log_dir}/testing_{bot_name}_{datetime.today().strftime('%Y-%m-%d_%H-%M')}.log"
         else:
-            path = f"./logs/{bot_name}_{datetime.today().strftime('%Y-%m-%d')}.log"
+            path = f"{log_dir}/{bot_name}_{datetime.today().strftime('%Y-%m-%d')}.log"
         return path
     def log(self, message, level=logging.INFO):
         """
@@ -78,7 +79,7 @@ class MyNormalLogger():
             Referencia el ambiente
         """
         self.testing = testing
-        self.logger = logging.getLogger(__name__)
+        self.logger = logging.getLogger('sequential_logger')
         self.path_to_log_file = self.get_path_to_log_file(bot_name)
         file_handler = logging.FileHandler(self.path_to_log_file)
         formatter = logging.Formatter("%(asctime)s :: %(funcName)s :: %(lineno)d :: %(message)s")
@@ -91,14 +92,15 @@ class MyNormalLogger():
         """
 
         # Check if the logs folder exists, and if not, create it
-        if not os.path.exists('./logs'):
-            os.makedirs('./logs')
+        log_dir = './logs'
+        if not os.path.exists(log_dir):
+            os.makedirs(log_dir)
 
         # Get the file paths for testing and production.
         if self.testing:
-            path = f"./logs/testing_{bot_name}_{datetime.today().strftime('%Y-%m-%d_%H-%M')}.log"
+            path = f"{log_dir}/testing_{bot_name}_{datetime.today().strftime('%Y-%m-%d_%H-%M')}.log"
         else:
-            path = f"./logs/{bot_name}_{datetime.today().strftime('%Y-%m-%d')}.log"
+            path = f"{log_dir}/{bot_name}_{datetime.today().strftime('%Y-%m-%d')}.log"
         return path
     def log(self, message, level=logging.INFO):
         """
@@ -109,7 +111,7 @@ class MyNormalLogger():
 def test_time_difference(n_logs: int, cap: int, message_length: int = 100):
     """
     Testea la diferencia en velocidad entre el BatchLogger y el NormalLogger.
-    
+
     Parámetros
     ----------
     n_logs: int
@@ -121,8 +123,8 @@ def test_time_difference(n_logs: int, cap: int, message_length: int = 100):
         Longitud del mensaje a Loggear.
     """
     tic = time.time()
-    logger = MyBatchLogger('batch', capacity=cap)
-    for i in range(n_logs):
+    logger = MyBatchLogger('batch', capacity=cap, testing=True)
+    for _ in range(n_logs):
         logger.log('L'*message_length, level=logging.DEBUG)
     toc1 = time.time()
     logger.flush()
@@ -131,8 +133,8 @@ def test_time_difference(n_logs: int, cap: int, message_length: int = 100):
     batch_flush_time_diff = toc2 - toc1
 
     tic = time.time()
-    logger = MyNormalLogger('normal')
-    for i in range(n_logs):
+    logger = MyNormalLogger('normal', testing=True)
+    for _ in range(n_logs):
         logger.log('L'*message_length, level=logging.DEBUG)
     toc = time.time()
     normal_logger_time_diff = toc - tic
