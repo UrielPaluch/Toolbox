@@ -4,7 +4,31 @@ import os
 from datetime import datetime
 import timeit
 
-class MyBatchLogger():
+class MyBaseLogger():
+    """
+    Base Logger class with common methods.
+    """
+    def __init__(self, bot_name: str, testing: bool) -> None:
+        self.testing = testing
+        self.path_to_log_file = self.get_path_to_log_file(bot_name)
+
+    def get_path_to_log_file(self, bot_name: str) -> str:
+        """
+        Returns the path to the log file.
+        """
+        # Check if the logs folder exists, and if not, create it
+        log_dir = './logs'
+        if not os.path.exists(log_dir):
+            os.makedirs(log_dir)
+
+        # Get the file paths for testing and production.
+        if self.testing:
+            path = f"{log_dir}/testing_{bot_name}_{datetime.today().strftime('%Y-%m-%d_%H-%M')}.log"
+        else:
+            path = f"{log_dir}/{bot_name}_{datetime.today().strftime('%Y-%m-%d')}.log"
+        return path
+
+class MyBatchLogger(MyBaseLogger):
     """
     Logger que guarda los mensajes en memoria hasta que se llena la capacidad, \
     y luego los escribe en el archivo de log.
@@ -24,36 +48,22 @@ class MyBatchLogger():
         testing : bool
             Referencia el ambiente
         """
+        super().__init__(bot_name, testing)
         self.capacity = capacity
-        self.testing = testing
         self.logger = logging.getLogger('batch_logger')
-        self.path_to_log_file = self.get_path_to_log_file(bot_name)
         file_handler = logging.FileHandler(self.path_to_log_file)
         formatter = logging.Formatter("%(asctime)s :: %(funcName)s :: %(lineno)d :: %(message)s")
         file_handler.setFormatter(formatter)
         handler = MemoryHandler(self.capacity, target=file_handler)
         self.logger.addHandler(handler)
         self.logger.setLevel(logging.DEBUG)
-    def get_path_to_log_file(self, bot_name: str) -> str:
-        """
-        Devuelve el path al archivo de logging
-        """
-        # Check if the logs folder exists, and if not, create it
-        log_dir = './logs'
-        if not os.path.exists(log_dir):
-            os.makedirs(log_dir)
 
-        # Get the file paths for testing and production.
-        if self.testing:
-            path = f"{log_dir}/testing_{bot_name}_{datetime.today().strftime('%Y-%m-%d_%H-%M')}.log"
-        else:
-            path = f"{log_dir}/{bot_name}_{datetime.today().strftime('%Y-%m-%d')}.log"
-        return path
     def log(self, message, level=logging.INFO):
         """
         Loggea el mensaje en memoria
         """
         self.logger.log(level, message)
+
     def flush(self):
         """
         Escribe los mensajes en memoria en el archivo de log
@@ -62,7 +72,7 @@ class MyBatchLogger():
             handler.flush()
             handler.close()
 
-class MyNormalLogger():
+class MyNormalLogger(MyBaseLogger):
     """
     Logger que escribe los mensajes en el archivo de log a medida que se van \
     recibiendo.
@@ -78,30 +88,14 @@ class MyNormalLogger():
         testing : bool
             Referencia el ambiente
         """
-        self.testing = testing
+        super().__init__(bot_name, testing)
         self.logger = logging.getLogger('sequential_logger')
-        self.path_to_log_file = self.get_path_to_log_file(bot_name)
         file_handler = logging.FileHandler(self.path_to_log_file)
         formatter = logging.Formatter("%(asctime)s :: %(funcName)s :: %(lineno)d :: %(message)s")
         file_handler.setFormatter(formatter)
         self.logger.addHandler(file_handler)
         self.logger.setLevel(logging.DEBUG)
-    def get_path_to_log_file(self, bot_name: str) -> str:
-        """
-        Devuelve el path al archivo de logging
-        """
 
-        # Check if the logs folder exists, and if not, create it
-        log_dir = './logs'
-        if not os.path.exists(log_dir):
-            os.makedirs(log_dir)
-
-        # Get the file paths for testing and production.
-        if self.testing:
-            path = f"{log_dir}/testing_{bot_name}_{datetime.today().strftime('%Y-%m-%d_%H-%M')}.log"
-        else:
-            path = f"{log_dir}/{bot_name}_{datetime.today().strftime('%Y-%m-%d')}.log"
-        return path
     def log(self, message, level=logging.INFO):
         """
         Loggea el mensaje en el archivo de log
@@ -122,6 +116,7 @@ def test_time_difference(n_logs: int, cap: int, message_length: int = 100):
     message_length: int
         Longitud del mensaje a Loggear.
     """
+    # Batch logger
     tic = timeit.default_timer()
     logger = MyBatchLogger('batch', capacity=cap, testing=True)
     for _ in range(n_logs):
@@ -132,12 +127,15 @@ def test_time_difference(n_logs: int, cap: int, message_length: int = 100):
     batch_log_time_diff = toc2 - tic
     batch_flush_time_diff = toc2 - toc1
 
+    # Normal logger
     tic = timeit.default_timer()
     logger = MyNormalLogger('normal', testing=True)
     for _ in range(n_logs):
         logger.log('L'*message_length, level=logging.DEBUG)
     toc = timeit.default_timer()
     normal_logger_time_diff = toc - tic
+
+
 
     return (batch_log_time_diff, batch_flush_time_diff), normal_logger_time_diff
 
