@@ -99,20 +99,43 @@ class MyNormalLogger():
     def log(self, message, level=logging.INFO):
         self.logger.log(level, message)
 
-if __name__ == '__main__':
-    # Testing speed difference between both loggers.
-    N = 10000
+def test_time_difference(N: int, cap: int, message_length: int = 100):
+    """
+    Test the time difference between the batch logger and the normal logger.
+    
+    Parameters
+    ----------
+    N : int
+        Number of messages to log.
+    cap: int
+        Capacity of the batch logger.
+    message_length: int
+        Length of the message to log.
+    """
     tic = time.time()
-    logger = MyBatchLogger('batch', capacity=N//2)
+    logger = MyBatchLogger('batch', capacity=cap)
     for i in range(N):
-        logger.log(f'Message {i}'*10, level=logging.DEBUG)
+        logger.log('L'*message_length, level=logging.DEBUG)
+    toc1 = time.time()
     logger.flush()
-    toc = time.time()
-    print(f'Batch Logger: {toc - tic:.2f}s')
+    toc2 = time.time()
+    batch_log_time = toc2 - tic
+    batch_flush_time = toc2 - toc1
 
     tic = time.time()
     logger = MyNormalLogger('normal')
     for i in range(N):
-        logger.log(f'Message {i}'*10, level=logging.DEBUG)
+        logger.log('L'*message_length, level=logging.DEBUG)
     toc = time.time()
-    print(f'Normal Logger: {toc - tic:.2f}s')
+    normal_logger_time_difference = toc - tic
+
+    return (batch_log_time, batch_flush_time), normal_logger_time_difference
+
+if __name__ == '__main__':
+    # Testing speed difference between both loggers.
+    (batch_log_time, batch_flush_time), normal_time = test_time_difference(N=100, cap=100)
+    batch_time = batch_log_time + batch_flush_time
+
+    print(f'Batch Logger: log time {batch_log_time*1000:.0f}ms, flush time {batch_flush_time*1000:.0f}ms')
+    print(f'Normal Logger: {normal_time*1000:.0f}ms')
+    print(f'Batch Logger is {normal_time/batch_time:.2f} times faster than the normal logger.')
