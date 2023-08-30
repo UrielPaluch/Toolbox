@@ -1,8 +1,7 @@
 import logging
-from logging.handlers import BufferingHandler, MemoryHandler
+from logging.handlers import MemoryHandler
 import os
 from datetime import datetime
-import yaml
 import time
 
 class MyBatchLogger():
@@ -19,7 +18,8 @@ class MyBatchLogger():
             Nombre del bot
 
         capacity : int
-            Cantidad de mensajes que se guardan en memoria antes de escribirlos en el archivo de log
+            Cantidad de mensajes que se guardan en memoria antes de escribirlos \
+            en el archivo de log
 
         testing : bool
             Referencia el ambiente
@@ -63,7 +63,8 @@ class MyBatchLogger():
 
 class MyNormalLogger():
     """
-    Logger que escribe los mensajes en el archivo de log a medida que se van recibiendo.
+    Logger que escribe los mensajes en el archivo de log a medida que se van \
+    recibiendo.
     """
     def __init__(self, bot_name: str, testing : bool = True) -> None:
         """Inicializa el logger
@@ -140,7 +141,9 @@ def test_time_difference(n_logs: int, cap: int, message_length: int = 100):
 
 if __name__ == '__main__':
     # Testing speed difference between both loggers.
-    (batch_log_time, batch_flush_time), normal_time = test_time_difference(n_logs=400000, cap=5000)
+    (batch_log_time, batch_flush_time), normal_time = test_time_difference(
+        n_logs=400000, cap=50000
+    )
     batch_time = batch_log_time + batch_flush_time
 
     print(f'Batch Logger: log time {batch_log_time*1000:.0f}ms, flush time {batch_flush_time*1000:.0f}ms')
