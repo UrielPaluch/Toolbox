@@ -9,7 +9,7 @@ class MyBatchLogger():
     Logger que guarda los mensajes en memoria hasta que se llena la capacidad, \
     y luego los escribe en el archivo de log.
     """
-    def __init__(self, bot_name: str, capacity: int, testing : bool = True) -> None:
+    def __init__(self, bot_name: str, capacity: int, testing: bool) -> None:
         """Inicializa el logger
 
         Parameters
@@ -66,7 +66,7 @@ class MyNormalLogger():
     Logger que escribe los mensajes en el archivo de log a medida que se van \
     recibiendo.
     """
-    def __init__(self, bot_name: str, testing : bool = True) -> None:
+    def __init__(self, bot_name: str, testing : bool) -> None:
         """Inicializa el logger
 
         Parameters
