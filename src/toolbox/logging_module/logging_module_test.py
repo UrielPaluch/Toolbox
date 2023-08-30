@@ -2,7 +2,7 @@ import logging
 from logging.handlers import MemoryHandler
 import os
 from datetime import datetime
-import time
+import timeit
 
 class MyBatchLogger():
     """
@@ -122,21 +122,21 @@ def test_time_difference(n_logs: int, cap: int, message_length: int = 100):
     message_length: int
         Longitud del mensaje a Loggear.
     """
-    tic = time.time()
+    tic = timeit.default_timer()
     logger = MyBatchLogger('batch', capacity=cap, testing=True)
     for _ in range(n_logs):
         logger.log('L'*message_length, level=logging.DEBUG)
-    toc1 = time.time()
+    toc1 = timeit.default_timer()
     logger.flush()
-    toc2 = time.time()
+    toc2 = timeit.default_timer()
     batch_log_time_diff = toc2 - tic
     batch_flush_time_diff = toc2 - toc1
 
-    tic = time.time()
+    tic = timeit.default_timer()
     logger = MyNormalLogger('normal', testing=True)
     for _ in range(n_logs):
         logger.log('L'*message_length, level=logging.DEBUG)
-    toc = time.time()
+    toc = timeit.default_timer()
     normal_logger_time_diff = toc - tic
 
     return (batch_log_time_diff, batch_flush_time_diff), normal_logger_time_diff
