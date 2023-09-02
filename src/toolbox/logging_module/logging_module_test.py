@@ -97,10 +97,7 @@ class MyNormalLogger(MyBaseLogger):
         """
         Loggea el mensaje en el archivo de log
         """
-        caller_function_name = inspect.currentframe().f_back.f_code.co_name
-        # Pass the caller's function name as an extra parameter to the logger
-        self.logger.log(level, message, extra={'caller_funcname': caller_function_name})
-
+        self.logger.log(level, message)
 
 def test_time_difference(n_logs: int, cap: int, message_length: int = 100) -> None:
     """
