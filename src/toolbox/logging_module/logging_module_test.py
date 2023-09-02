@@ -61,6 +61,8 @@ class MyBatchLogger(MyBaseLogger):
         """
         Loggea el mensaje en memoria
         """
+        # including timestamp on the message
+        message = datetime.now().strftime("%H:%M:%S.%f") + ' :: ' + message
         self.logger.log(level, message)
 
     def flush(self):
@@ -97,6 +99,8 @@ class MyNormalLogger(MyBaseLogger):
         """
         Loggea el mensaje en el archivo de log
         """
+        # including timestamp on the message
+        message = datetime.now().strftime("%H:%M:%S.%f") + ' :: ' + message
         self.logger.log(level, message)
 
 def test_time_difference(n_logs: int, cap: int, message_length: int = 100) -> None:
