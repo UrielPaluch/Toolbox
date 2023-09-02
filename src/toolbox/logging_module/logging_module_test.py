@@ -3,6 +3,7 @@ from logging.handlers import MemoryHandler
 import os
 from datetime import datetime
 import timeit
+import inspect
 
 class MyBaseLogger():
     """
@@ -52,8 +53,6 @@ class MyBatchLogger(MyBaseLogger):
         self.capacity = capacity
         self.logger = logging.getLogger('batch_logger')
         file_handler = logging.FileHandler(self.path_to_log_file)
-        formatter = logging.Formatter("%(asctime)s :: %(funcName)s :: %(lineno)d :: %(message)s")
-        file_handler.setFormatter(formatter)
         handler = MemoryHandler(self.capacity, target=file_handler)
         self.logger.addHandler(handler)
         self.logger.setLevel(logging.DEBUG)
@@ -91,8 +90,6 @@ class MyNormalLogger(MyBaseLogger):
         super().__init__(bot_name, testing)
         self.logger = logging.getLogger('sequential_logger')
         file_handler = logging.FileHandler(self.path_to_log_file)
-        formatter = logging.Formatter("%(asctime)s :: %(funcName)s :: %(lineno)d :: %(message)s")
-        file_handler.setFormatter(formatter)
         self.logger.addHandler(file_handler)
         self.logger.setLevel(logging.DEBUG)
 
@@ -100,9 +97,12 @@ class MyNormalLogger(MyBaseLogger):
         """
         Loggea el mensaje en el archivo de log
         """
-        self.logger.log(level, message)
+        caller_function_name = inspect.currentframe().f_back.f_code.co_name
+        # Pass the caller's function name as an extra parameter to the logger
+        self.logger.log(level, message, extra={'caller_funcname': caller_function_name})
 
-def test_time_difference(n_logs: int, cap: int, message_length: int = 100):
+
+def test_time_difference(n_logs: int, cap: int, message_length: int = 100) -> None:
     """
     Testea la diferencia en velocidad entre el BatchLogger y el NormalLogger.
 
@@ -124,8 +124,8 @@ def test_time_difference(n_logs: int, cap: int, message_length: int = 100):
     toc1 = timeit.default_timer()
     logger.flush()
     toc2 = timeit.default_timer()
-    batch_log_time_diff = toc2 - tic
-    batch_flush_time_diff = toc2 - toc1
+    batch_log_time = toc2 - tic
+    batch_flush_time = toc2 - toc1
 
     # Normal logger
     tic = timeit.default_timer()
@@ -133,19 +133,69 @@ def test_time_difference(n_logs: int, cap: int, message_length: int = 100):
     for _ in range(n_logs):
         logger.log('L'*message_length, level=logging.DEBUG)
     toc = timeit.default_timer()
-    normal_logger_time_diff = toc - tic
+    normal_logger_time = toc - tic
 
+    batch_logger_time = batch_log_time + batch_flush_time
 
+    print(f'Batch Logger: log time {batch_log_time*1000:.0f}ms, flush time {batch_flush_time*1000:.0f}ms')
+    print(f'Normal Logger: {normal_logger_time*1000:.0f}ms')
+    print(f'Batch Logger is {normal_logger_time/batch_logger_time:.2f} times faster than the normal logger.')
 
-    return (batch_log_time_diff, batch_flush_time_diff), normal_logger_time_diff
+def run_simulation():
+    """
+    Corre la simulación de logging.
+    """
+    normal_logging_time = simulate_normal_logging()
+    batch_logging_time = simulate_batch_logging()
+
+    print(f'Normal Logger: {normal_logging_time*1000:.0f}ms')
+    print(f'Batch Logger: {batch_logging_time*1000:.0f}ms')
+    print(f'Batch Logger is {normal_logging_time/batch_logging_time:.2f} times faster than the normal logger.')
+
+def simulate_normal_logging():
+    """
+    Simula el logging de mensajes.
+    """
+    messages = load_test_log()
+
+    tic = timeit.default_timer()
+    logger = MyNormalLogger('normal', testing=True)
+
+    for message in messages:
+        logger.log(message, level=logging.DEBUG)
+    toc = timeit.default_timer()
+
+    return toc - tic
+
+def simulate_batch_logging(capacity: int = 1000):
+    """
+    Simula el logging de mensajes.
+    """
+    messages = load_test_log()
+
+    tic = timeit.default_timer()
+    logger = MyBatchLogger('batch', capacity=capacity, testing=True)
+
+    for message in messages:
+        logger.log(message, level=logging.DEBUG)
+    logger.flush()
+    toc = timeit.default_timer()
+
+    return toc - tic
+
+def load_test_log():
+    """
+    Carga el log de prueba.
+    """
+    with open('./logs/testing.log', 'r') as file:
+        lines = file.readlines()
+    log_messages = [line.split(' :: ')[-1][:-1] for line in lines]
+
+    return log_messages
 
 if __name__ == '__main__':
     # Testing speed difference between both loggers.
-    (batch_log_time, batch_flush_time), normal_time = test_time_difference(
-        n_logs=400000, cap=50000
-    )
-    batch_time = batch_log_time + batch_flush_time
+    # test_time_difference(n_logs=400000, cap=1000)
 
-    print(f'Batch Logger: log time {batch_log_time*1000:.0f}ms, flush time {batch_flush_time*1000:.0f}ms')
-    print(f'Normal Logger: {normal_time*1000:.0f}ms')
-    print(f'Batch Logger is {normal_time/batch_time:.2f} times faster than the normal logger.')
+    # Simulating logging
+    run_simulation()
