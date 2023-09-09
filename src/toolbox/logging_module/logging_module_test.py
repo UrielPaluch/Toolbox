@@ -1,3 +1,18 @@
+"""
+Module for logging.
+
+Classes
+-------
+BaseLogger
+    Base Logger class with common methods.
+
+BatchLogger
+    Batch Logger class with BaseLogger methods, and it's own flush method.
+
+NormalLogger
+    Regular Logger class with BaseLogger methods.
+"""
+
 from datetime import datetime
 import logging
 from logging.handlers import MemoryHandler
@@ -59,7 +74,7 @@ class BaseLogger:
 
         # Get the file paths for testing and production.
         if self.testing:
-            path = f"{log_dir}/testing_{bot_name}_{datetime.today().strftime('%Y-%m-%d_%H-%M-%S')}.log"
+            path = f"{log_dir}/testing_{bot_name}_{datetime.today().strftime('%Y-%m-%d_%H-%M-%S')}.log" #pylint: disable=line-too-long
         else:
             path = f"{log_dir}/{bot_name}_{datetime.today().strftime('%Y-%m-%d')}.log"
         return path
