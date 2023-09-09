@@ -9,5 +9,5 @@ from .toolbox import hay_mercado
 from .toolbox import extract_price_size_values
 from .toolbox import extract_ticker_market_values
 
-from .toolbox.logging_module import my_logger
-from .toolbox.logging_module import logging
+from .toolbox.logging_module import BatchLogger
+from .toolbox.logging_module import NormalLogger
