@@ -203,7 +203,7 @@ class BatchLogger(BaseLogger):
 
     """
 
-    def __init__(self, bot_name: str, capacity: int, testing: bool) -> None:
+    def __init__(self, bot_name: str, testing: bool, capacity: int=20000) -> None:
         """Inicializa el logger
 
         Parameters
