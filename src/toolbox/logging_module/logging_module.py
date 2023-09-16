@@ -63,6 +63,10 @@ class BaseLogger:
         self.testing = testing
         self.path_to_log_file = self.get_path_to_log_file(bot_name)
         self.logger = logging.getLogger(logger_name)
+        self.formatter = logging.Formatter(
+            '%(asctime)s.%(msecs)06d :: %(message)s',
+            datefmt='%H:%M:%S'
+        )
 
     def get_path_to_log_file(self, bot_name: str) -> str:
         """
@@ -80,22 +84,6 @@ class BaseLogger:
             path = f"{log_dir}/{bot_name}_{datetime.today().strftime('%Y-%m-%d')}.log"
         return path
 
-    def format_log_message(self, message):
-        """
-        Formatea el mensaje.
-
-        Ejemplo de formato de salida:
-
-        "17:31:09.289737 :: Esta en PRODUCCION"
-
-        Parameters
-        ----------
-        message : str
-            Mensaje a formatear.
-        """
-        message = datetime.now().strftime("%H:%M:%S.%f") + " :: " + message
-        return message
-
     def info(self, message: str, *args) -> None:
         """
         Loggea el mensaje en memoria con nivel info.
@@ -106,7 +94,7 @@ class BaseLogger:
             Mensaje a loggear.
         """
 
-        self.logger.info(self.format_log_message(message), *args)
+        self.logger.info(message, *args)
 
     def debug(self, message: str, *args) -> None:
         """
@@ -118,7 +106,7 @@ class BaseLogger:
             Mensaje a loggear.
         """
 
-        self.logger.debug(self.format_log_message(message), *args)
+        self.logger.debug(message, *args)
 
     def warning(self, message: str, *args) -> None:
         """
@@ -130,7 +118,7 @@ class BaseLogger:
             Mensaje a loggear.
         """
 
-        self.logger.warning(self.format_log_message(message), *args)
+        self.logger.warning(message, *args)
 
     def error(self, message: str, *args) -> None:
         """
@@ -142,7 +130,7 @@ class BaseLogger:
             Mensaje a loggear.
         """
 
-        self.logger.error(self.format_log_message(message), *args)
+        self.logger.error(message, *args)
 
     def critical(self, message: str, *args) -> None:
         """
@@ -154,7 +142,7 @@ class BaseLogger:
             Mensaje a loggear.
         """
 
-        self.logger.critical(self.format_log_message(message), *args)
+        self.logger.critical(message, *args)
 
 
 class BatchLogger(BaseLogger):
@@ -222,6 +210,7 @@ class BatchLogger(BaseLogger):
         self.capacity = capacity
         self.logger = logging.getLogger("batch_logger")
         file_handler = logging.FileHandler(self.path_to_log_file)
+        file_handler.setFormatter(self.formatter)
         handler = MemoryHandler(self.capacity, target=file_handler)
         self.logger.addHandler(handler)
         self.logger.setLevel(logging.DEBUG)
@@ -229,6 +218,7 @@ class BatchLogger(BaseLogger):
         # Add a stream handler to print logs to the terminal if running in testing.
         if self.testing:
             stream_handler = logging.StreamHandler(sys.stdout)
+            stream_handler.setFormatter(self.formatter)
             self.logger.addHandler(stream_handler)
 
     def flush(self):
@@ -293,10 +283,12 @@ class NormalLogger(BaseLogger):
             logger_name="sequential_logger", bot_name=bot_name, testing=testing
         )
         file_handler = logging.FileHandler(self.path_to_log_file)
+        file_handler.setFormatter(self.formatter)
         self.logger.addHandler(file_handler)
         self.logger.setLevel(logging.DEBUG)
 
         # Add a stream handler to print logs to the terminal if running in testing.
         if self.testing:
             stream_handler = logging.StreamHandler(sys.stdout)
+            stream_handler.setFormatter(self.formatter)
             self.logger.addHandler(stream_handler)
