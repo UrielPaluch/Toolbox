@@ -17,6 +17,7 @@ from datetime import datetime
 import logging
 from logging.handlers import MemoryHandler
 import os
+import sys
 
 
 class BaseLogger:
@@ -92,11 +93,10 @@ class BaseLogger:
         message : str
             Mensaje a formatear.
         """
-
         message = datetime.now().strftime("%H:%M:%S.%f") + " :: " + message
         return message
 
-    def info(self, message: str) -> None:
+    def info(self, message: str, *args) -> None:
         """
         Loggea el mensaje en memoria con nivel info.
 
@@ -106,9 +106,9 @@ class BaseLogger:
             Mensaje a loggear.
         """
 
-        self.logger.info(self.format_log_message(message))
+        self.logger.info(self.format_log_message(message), *args)
 
-    def debug(self, message: str) -> None:
+    def debug(self, message: str, *args) -> None:
         """
         Loggea el mensaje en memoria con nivel error.
 
@@ -118,9 +118,9 @@ class BaseLogger:
             Mensaje a loggear.
         """
 
-        self.logger.debug(self.format_log_message(message))
+        self.logger.debug(self.format_log_message(message), *args)
 
-    def warning(self, message: str) -> None:
+    def warning(self, message: str, *args) -> None:
         """
         Loggea el mensaje en memoria con nivel warning.
 
@@ -130,9 +130,9 @@ class BaseLogger:
             Mensaje a loggear.
         """
 
-        self.logger.warning(self.format_log_message(message))
+        self.logger.warning(self.format_log_message(message), *args)
 
-    def error(self, message: str) -> None:
+    def error(self, message: str, *args) -> None:
         """
         Loggea el mensaje en memoria con nivel error.
 
@@ -142,9 +142,9 @@ class BaseLogger:
             Mensaje a loggear.
         """
 
-        self.logger.error(self.format_log_message(message))
+        self.logger.error(self.format_log_message(message), *args)
 
-    def critical(self, message: str) -> None:
+    def critical(self, message: str, *args) -> None:
         """
         Loggea el mensaje en memoria con nivel critical.
 
@@ -154,7 +154,7 @@ class BaseLogger:
             Mensaje a loggear.
         """
 
-        self.logger.critical(self.format_log_message(message))
+        self.logger.critical(self.format_log_message(message), *args)
 
 
 class BatchLogger(BaseLogger):
@@ -226,6 +226,11 @@ class BatchLogger(BaseLogger):
         self.logger.addHandler(handler)
         self.logger.setLevel(logging.DEBUG)
 
+        # Add a stream handler to print logs to the terminal if running in testing.
+        if self.testing:
+            stream_handler = logging.StreamHandler(sys.stdout)
+            self.logger.addHandler(stream_handler)
+
     def flush(self):
         """
         Escribe los mensajes en memoria en el archivo de log
@@ -290,3 +295,8 @@ class NormalLogger(BaseLogger):
         file_handler = logging.FileHandler(self.path_to_log_file)
         self.logger.addHandler(file_handler)
         self.logger.setLevel(logging.DEBUG)
+
+        # Add a stream handler to print logs to the terminal if running in testing.
+        if self.testing:
+            stream_handler = logging.StreamHandler(sys.stdout)
+            self.logger.addHandler(stream_handler)
