@@ -67,6 +67,15 @@ class BaseLogger:
             '%(asctime)s.%(msecs)06d :: %(message)s',
             datefmt='%H:%M:%S'
         )
+        self.file_handler = logging.FileHandler(self.path_to_log_file)
+        self.file_handler.setFormatter(self.formatter)
+        self.logger.setLevel(logging.DEBUG)
+
+        # Add a stream handler to print logs to the terminal if running in testing.
+        if self.testing:
+            stream_handler = logging.StreamHandler(sys.stdout)
+            stream_handler.setFormatter(self.formatter)
+            self.logger.addHandler(stream_handler)
 
     def get_path_to_log_file(self, bot_name: str) -> str:
         """
@@ -208,18 +217,9 @@ class BatchLogger(BaseLogger):
         """
         super().__init__(logger_name="batch_logger", bot_name=bot_name, testing=testing)
         self.capacity = capacity
-        self.logger = logging.getLogger("batch_logger")
-        file_handler = logging.FileHandler(self.path_to_log_file)
-        file_handler.setFormatter(self.formatter)
-        handler = MemoryHandler(self.capacity, target=file_handler)
-        self.logger.addHandler(handler)
+        self.memory_handler = MemoryHandler(self.capacity, target=self.file_handler)
+        self.logger.addHandler(self.memory_handler)
         self.logger.setLevel(logging.DEBUG)
-
-        # Add a stream handler to print logs to the terminal if running in testing.
-        if self.testing:
-            stream_handler = logging.StreamHandler(sys.stdout)
-            stream_handler.setFormatter(self.formatter)
-            self.logger.addHandler(stream_handler)
 
     def flush(self):
         """
@@ -282,13 +282,4 @@ class NormalLogger(BaseLogger):
         super().__init__(
             logger_name="sequential_logger", bot_name=bot_name, testing=testing
         )
-        file_handler = logging.FileHandler(self.path_to_log_file)
-        file_handler.setFormatter(self.formatter)
-        self.logger.addHandler(file_handler)
-        self.logger.setLevel(logging.DEBUG)
-
-        # Add a stream handler to print logs to the terminal if running in testing.
-        if self.testing:
-            stream_handler = logging.StreamHandler(sys.stdout)
-            stream_handler.setFormatter(self.formatter)
-            self.logger.addHandler(stream_handler)
+        self.logger.addHandler(self.file_handler)
