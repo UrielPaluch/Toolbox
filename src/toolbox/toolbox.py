@@ -2,6 +2,7 @@
     Define las funciones de la libreria
 """
 import datetime
+import re
 import numpy as np
 
 def get_feriados_byma() -> list['str']:
@@ -20,65 +21,47 @@ def get_feriados_byma() -> list['str']:
 
     return feriados_byma
 
-def calculo_plazo_liquidacion_48hs(hoy : datetime.date = datetime.date.today()) -> int:
-    """ Plazo de liquidacion de 48hs en dias para el calculo de la tasa
+def calculo_plazo_liquidacion(dict_instruments: list, plazo: int) -> int:
+    """ Recibe un diccionario con todos los instrumentos disponibles y en base
+    
+    a las tasas de caución disponibles devuelve los días de liquidación según
+
+    el parametro plazo.
 
     Parameters
     ----------
-    hoy : datetime.date
-        Fecha para calcular el plazo de liquidacion. Default: Hoy.
+    dict_instruments : dict
+        Recibe una lista con todos los instrumentos
+    
+    plazo : int
+        Plazo de liquidacion. Ejemplo: si plazo = 0, devuelve t+0.
 
     Returns
-    ----------
+    -------
     int
-        Proximo plazo de liquidacion en dias
-
+        dias de liquidacion para el plazo deseado
     """
-    # Los feriados tienen que estar en orden con el formato yyyy-mm-dd
-    # Se extraen los feriados de https://www.byma.com.ar/servicios/calendario-bursatil/
-    # para cargarlos en la variable feriados_byma
-    feriados_byma = get_feriados_byma()
+    dict_instruments = dict_instruments['instruments']
 
-    dia_liquidacion = hoy
+    # Al plazo le tengo que restar uno porque las listas en python empiezan
+    # en 0, entonces si yo quiero colocar caucion a 1 dia necesito el elemento 0
+    # de la lista
+    plazo = plazo - 1
 
-    count_dias_habiles = 0
+    list_caucion = []
+    expresion_regular = r'(\d+)D'
 
-    while count_dias_habiles < 2:
-        dia_liquidacion = dia_liquidacion + datetime.timedelta(days = 1)
+    for element in dict_instruments:
+        cficode = element["cficode"]
+        # CAUCION (RPXXXX)
+        # Solo lo hago con la caucion en pesos
+        if cficode == "RPXXXX" and element["currency"] == "ARS":
+            symbol = element["instrumentId"]["symbol"]
+            list_caucion.append(int(re.search(expresion_regular, symbol).group(1)))
 
-        if np.is_busday(dia_liquidacion, holidays = feriados_byma):
-            count_dias_habiles += 1
+    list_caucion.sort()
 
-    diff_days = dia_liquidacion - hoy
-
-    return diff_days.days
-def calculo_plazo_liquidacion_24hs(hoy : datetime.date = datetime.date.today()) -> int:
-    """ Plazo de liquidacion en 24hs
-
-    Parameters
-    ----------
-    hoy : datetime.date
-        Fecha para calcular el plazo de liquidacion. Default: Hoy.
-
-    Returns
-    ----------
-    int
-        Proximo plazo de liquidacion en dias
-
-    """
-    # Los feriados tienen que estar en orden con el formato yyyy-mm-dd
-    # Se extraen los feriados de https://www.byma.com.ar/servicios/calendario-bursatil/
-    # para cargarlos en la variable feriados_byma
-    feriados_byma = get_feriados_byma()
-    dia_liquidacion = hoy + datetime.timedelta(days = 1)
-
-    count_dias = 1
-
-    while not np.is_busday(dia_liquidacion, holidays = feriados_byma):
-        dia_liquidacion = dia_liquidacion + datetime.timedelta(days = 1)
-        count_dias += 1
-
-    return count_dias
+    return list_caucion[plazo]
 
 def hay_mercado(hoy : datetime.date = datetime.date.today()) -> np.bool_:
     """ Devuelve si hay mercado
