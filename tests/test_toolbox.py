@@ -2,8 +2,6 @@
 import datetime
 
 from src.toolbox.toolbox import get_feriados_byma
-from src.toolbox.toolbox import calculo_plazo_liquidacion_48hs
-from src.toolbox.toolbox import calculo_plazo_liquidacion_24hs
 from src.toolbox.toolbox import hay_mercado
 from src.toolbox.toolbox import extract_price_size_values
 from src.toolbox.toolbox import extract_ticker_market_values
