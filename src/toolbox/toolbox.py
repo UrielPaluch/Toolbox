@@ -42,7 +42,7 @@ def calculo_plazo_liquidacion(dict_instruments: list, plazo: int) -> int:
     int
         dias de liquidacion para el plazo deseado
     """
-    dict_instruments = dict_instruments['instruments']
+    dict_instruments = dict_instruments['instruments'] # type: ignore
 
     # Al plazo le tengo que restar uno porque las listas en python empiezan
     # en 0, entonces si yo quiero colocar caucion a 1 dia necesito el elemento 0
@@ -58,7 +58,7 @@ def calculo_plazo_liquidacion(dict_instruments: list, plazo: int) -> int:
         # Solo lo hago con la caucion en pesos
         if cficode == "RPXXXX" and element["currency"] == "ARS":
             symbol = element["instrumentId"]["symbol"]
-            list_caucion.append(int(re.search(expresion_regular, symbol).group(1)))
+            list_caucion.append(int(re.search(expresion_regular, symbol).group(1))) # type: ignore
 
     list_caucion.sort()
 
