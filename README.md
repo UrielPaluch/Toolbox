@@ -44,6 +44,6 @@ Modulo de logging.
 * **my_logger** : inicializa el logger.
 * **logging** : expone todas las funcionalidades del modulo de logging de Python.
 
-### Author/Mainteiner
+### Author/Maintainer
 
 [Uriel Paluch](https://github.com/UrielPaluch)
