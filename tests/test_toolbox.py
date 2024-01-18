@@ -10,7 +10,7 @@ def test_get_feriados_byma():
 
     actual_return = get_feriados_byma()
 
-    len_expected_return = 17
+    len_expected_return = 15
 
     assert len(actual_return) == len_expected_return, "Cantidad de feriados incorrectos"
     assert isinstance(actual_return, list), "El tipo de datos devuelto no es una lista"
@@ -18,25 +18,25 @@ def test_get_feriados_byma():
 test_get_feriados_byma()
 
 def test_hay_mercado():
-    lunes = '2023-03-20'
+    lunes = '2024-03-18'
     lunes_expected_return = True
     lunes_actual_return = hay_mercado(datetime.datetime.strptime(lunes, "%Y-%m-%d").date())
 
     assert lunes_expected_return == lunes_actual_return, "Fallo el lunes"
 
-    sabado = '2023-03-18'
+    sabado = '2024-03-16'
     jueves_expected_return = False
     jueves_actual_return = hay_mercado(datetime.datetime.strptime(sabado, "%Y-%m-%d").date())
 
     assert jueves_expected_return == jueves_actual_return, "Fallo el sabado"
 
-    domingo = '2023-03-19'
+    domingo = '2024-03-17'
     viernes_expected_return = False
     viernes_actual_return = hay_mercado(datetime.datetime.strptime(domingo, "%Y-%m-%d").date())
 
     assert viernes_expected_return == viernes_actual_return, "Fallo el domingo"
 
-    feriado = '2023-03-24'
+    feriado = '2024-03-28'
     feriado_expected_return = False
     feriado_actual_return = hay_mercado(datetime.datetime.strptime(feriado, "%Y-%m-%d").date())
 
