@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "toolbox"
-version = "0.7.4"
+version = "0.7.5"
 description = ""
 authors = ["UrielPaluch <uripaluch.2@gmail.com>"]
 readme = "README.md"
